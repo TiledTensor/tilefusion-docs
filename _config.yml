@@ -1,7 +1,6 @@
-# Site settings
 title: TileFusion
 description: TileFusion is a highly efficient C++ macro kernel template library designed to elevate the level of abstraction in CUDA C for processing tiles.
-baseurl: "/tilefusion-docs"
+baseurl: ""
 url: "https://tiledtensor.github.io/tilefusion-docs/"
 authors:
   - name: "Ying Cao"
@@ -21,7 +20,6 @@ google_fonts:
   - name: "Lora"
     weights: "400,400i,700,700i"
 
-# Build settings
 markdown: kramdown
 kramdown:
   math_engine: mathjax
@@ -36,7 +34,6 @@ plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
-# Navigation
 header_pages:
   - docs/index.md
   - docs/installation.md
@@ -45,7 +42,6 @@ header_pages:
   - docs/benchmarks/index.md
   - docs/about.md
 
-# Just the Docs configuration
 aux_links:
   "TileFusion on GitHub":
     - "//github.com/microsoft/TileFusion"
