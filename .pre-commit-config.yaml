@@ -1,0 +1,32 @@
+minimum_pre_commit_version: 3.0.0
+
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+    -   id: check-added-large-files
+        args: ['--maxkb=1024']
+    -   id: check-merge-conflict
+    -   id: check-symlinks
+    -   id: detect-private-key
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-toml
+    -   id: mixed-line-ending
+        args: ['--fix=lf'] # fix line endings to unix style
+    -   id: check-case-conflict
+    -   id: check-json
+    -   id: trailing-whitespace
+
+-   repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.22
+    hooks:
+    -   id: mdformat
+        args: ["--number"]
+        additional_dependencies:
+          - mdformat-gfm
+          - mdformat-frontmatter
+          - mdformat-myst
+          - mdformat-tables
+          - mdformat-toc
+          - mdformat-black
