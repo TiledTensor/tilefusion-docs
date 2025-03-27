@@ -14,7 +14,7 @@ TileFusion adopts a hardware bottom-up approach by building kernels around the c
 
 ## Basic GEMM Example
 
-TileFusion implements `GlobalTile`, `SharedTile` and `RegTile` to customize the shape and layout of tiles located in the GPU's three memory hierarchies. Here's an example of a simple GEMM kernel written in TileFusion (the complete example can be found in [this directory](examples/cpp/01_gemm/01_gemm_global_reg/gemm.hpp)):
+TileFusion implements `GlobalTile`, `SharedTile` and `RegTile` to customize the shape and layout of tiles located in the GPU's three memory hierarchies. Here's an example of a simple GEMM kernel written in TileFusion (the complete example can be found in [this directory](https://github.com/microsoft/TileFusion/tree/main/examples/cpp/01_gemm/01_gemm_global_reg/gemm.hpp)):
 
 (*To simplify the demonstration, this example only involves two memory levels: global memory and registers. TileFusion also applies a similar concept to shared memory*.)
 

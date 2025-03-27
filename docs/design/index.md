@@ -9,4 +9,4 @@ Welcome to the TileFusion documentation. Here you'll find detailed information a
 
 ## Contents
 
-- [Data Layout for Efficient Shared Memory Access](tiles_in_shared_memory.md)
+- [Data Layout for Efficient Shared Memory Access](tiles_in_shared_memory)
