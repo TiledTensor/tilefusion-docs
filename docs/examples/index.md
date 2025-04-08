@@ -5,72 +5,96 @@ nav_order: 4
 has_children: false
 ---
 
-This page showcases various examples of using TileFusion.
+## 101: The GEMM Example
 
-## Basic GEMM Example
+TileFusion approaches the efficient implementation of a kernel by:
 
-TileFusion implements `GlobalTile`, `SharedTile` and `RegTile` to customize the shape and layout of tiles located in the GPU's three memory hierarchies. Here's an example of a simple GEMM kernel written in TileFusion (the complete example can be found in [this directory](https://github.com/microsoft/TileFusion/tree/master/examples/cpp/01_gemm/02_gemm_all_mem)):
+1. Managing dataflow over memory hierarchies.
+2. Configuring tile primitives, such as tile shapes, layouts, and other parameters.
 
-(*To simplify the demonstration, this example only involves two memory levels: global memory and registers. TileFusion also applies a similar concept to shared memory*.)
+This is an example of a simple GEMM (General Matrix Multiplication) kernel written using TileFusion. For the complete example, please refer to [this directory](https://github.com/microsoft/TileFusion/blob/master/examples/01_gemm/01_gemm_global_reg/gemm.hpp).
 
-```cpp
-template <typename InType, typename AccType, typename IteratorA, typename RegA,
-          typename LoaderA, typename IteratorB, typename RegB, typename LoaderB,
-          typename GlobalC, typename RegC, typename CStorer>
-__global__ void simple_gemm(const InType* dA, const InType* dB, AccType* dC) {
-    IteratorA gAs(dA);
-    RegA rA;
-    LoaderA loader_a;
+### Configuration of the Tile Primitives
 
-    IteratorB gBs(dB);
-    RegB rB;
-    LoaderB loader_b;
+The core programming constructs in TileFusion are `Tile`, `TileLayout`, `TileIterator`, `Loader`, and `Storer`.
 
-    RegC acc;
+1. **Declare the `Tile`**: [GlobalTile](https://github.com/microsoft/TileFusion/blob/master/include/types/global.hpp) and [RegTile](https://github.com/microsoft/TileFusion/blob/master/include/types/register.hpp) are utilized to customize the shape and layout of 1D (vector) or 2D (matrix) arrays within the GPU's three memory hierarchies, known as a *Tile*.
 
-    for (int k = 0; k < IteratorA::sc1; ++k) {
-        loader_a(gAs(k), rA);
-        loader_b(gBs(k), rB);
-        __syncthreads();
+2. **Declare the `TileIterator`**: Partition the `GlobalTile` into smaller, manageable sub-tiles for efficient processing.
 
-        gemm(rA, rB, acc);
-    }
-    __syncthreads();
+3. **Declare Loader and Storer**: Loaders and Storers use cooperative threads to transfer a tile from the source to the target location. They operate at the CTA level and accept the following inputs:
 
-    GlobalC gC(dC);
-    CStorer storer_c;
-    storer_c(acc, gC);
-}
-```
+   - **Warp Layout**
+   - **Target Tile**
+   - **Source Tile**
 
-- The `TileIterator` is used to divide the `GlobalTile` into smaller sub-tiles and iterate over them. Various warp reuse methods are provided to support efficient repeated loading of data by warps within a thread block. TileFusion provides efficient loading and storing methods that transfer data between memory hierarchies by utilizing specialized hardware-accelerated instructions. Tiles of data are then cooperatively loaded into the `RegTile`, which is stored in each thread's local register file.
-
-- Once the data is loaded into a thread's local register file, `gemm` performs matrix multiplication using TensorCore's warp-level matrix multiply-and-accumulate (wmma) instruction on the `BaseTile`s. The specialized data distribution required by TensorCore is automatically maintained by TileFusion's `RegTile` layout.
-
-- After the `gemm` operation is completed, data in the `RegTile` is cooperatively stored back from registers to global memory using the `RegToGlobalStorer`.
-
-Here is how to declare the `Tile` at each level of memory, use `TileIterator` to chunk large tiles into sub-tiles, and declare loaders and storers to transfer tiles between memory hierarchies.
+   Based on these parameters, they automatically infer a copy plan that partitions the data transfer work among the threads.
 
 ```cpp
-using WarpLayout = RowMajor<2, 2>;
-
-// operand A
-using GlobalA = GlobalTile<InType, RowMajor<128, 256>>;
-using IteratorA = TileIterator<GlobalA, TileShape<128, 32>>;
-using RegA = RegTile<BaseTileRowMajor<__half>, RowMajor<8, 8>>;
-using ALoader = GlobalToRegLoader<RegA, WarpLayout, kRowReuseCont>;
-
-// operand B
-using GlobalB = GlobalTile<InType, ColMajor<256, 64>>;
-using IteratorB = TileIterator<GlobalB, TileShape<32, 64>>;
-using RegB = RegTile<BaseTileColMajor<__half>, ColMajor<8, 4>>;
-using BLoader = GlobalToRegLoader<RegB, WarpLayout, kColReuseCont>;
-
-// output C
-using GlobalC = GlobalTile<AccType, RowMajor<128, 64>>;
-using RegC = RegTile<BaseTileRowMajor<float>, RowMajor<8, 8>>;
-using CStorer = RegToGlobalStorer<GlobalC, RegC, WarpLayout>;
+1  using WarpLayout = RowMajor<2, 2>;
+2
+3  // operand A
+4  using GlobalA = GlobalTile<InType, RowMajor<128, 256>>;
+5  using IteratorA = TileIterator<GlobalA, TileShape<128, 32>>;
+6  using RegA = RegTile<BaseTileRowMajor<__half>, RowMajor<8, 8>>;
+7  using ALoader = GlobalToRegLoader<RegA, WarpLayout, kRowReuseCont>;
+8
+9  // operand B
+10 using GlobalB = GlobalTile<InType, ColMajor<256, 64>>;
+11 using IteratorB = TileIterator<GlobalB, TileShape<32, 64>>;
+12 using RegB = RegTile<BaseTileColMajor<__half>, ColMajor<8, 4>>;
+13 using BLoader = GlobalToRegLoader<RegB, WarpLayout, kColReuseCont>;
+14
+15 // output C
+16 using GlobalC = GlobalTile<AccType, RowMajor<128, 64>>;
+17 using RegC = RegTile<BaseTileRowMajor<float>, RowMajor<8, 8>>;
+18 using CStorer = RegToGlobalStorer<GlobalC, RegC, WarpLayout>;
 ```
+
+> **Note**: To simplify the demonstration, this example involves only two memory levels: global memory and registers. TileFusion also applies similar concepts to [SharedTile](https://github.com/microsoft/TileFusion/blob/master/include/types/shared.hpp).
+
+### Dataflow Over Memory Hierarchies
+
+The the kernel is defined as implementing the following dataflow over memory hierarchies:
+
+```cpp
+1  template <typename InType, typename AccType,
+2            typename IteratorA, typename RegA, typename LoaderA,
+3            typename IteratorB, typename RegB, typename LoaderB,
+4            typename GlobalC, typename RegC, typename CStorer>
+5  __global__ void simple_gemm(const InType* dA, const InType* dB, AccType* dC) {
+6      IteratorA gAs(dA);
+7      RegA rA;
+8      LoaderA loader_a;
+9
+10     IteratorB gBs(dB);
+11     RegB rB;
+12     LoaderB loader_b;
+13
+14     RegC acc;
+15
+16     for (int k = 0; k < IteratorA::sc1; ++k) {
+17         loader_a(gAs(k), rA);
+18         loader_b(gBs(k), rB);
+19         __syncthreads();
+20
+21         gemm(rA, rB, acc);
+22     }
+23     __syncthreads();
+24
+25     GlobalC gC(dC);
+26     CStorer storer_c;
+27     storer_c(acc, gC);
+28 }
+```
+
+The `TileIterator` (`IteratorA`, `IteratorB` in lines 6 and 10) serves as a syntactic interface for defining tile partitions. It is used to divide the `GlobalTile` into smaller sub-tiles and iterate over them.
+
+`Loader` and `Storer` (declared in lines 8, 12, and 26) are efficient methods for loading and storing data, transferring data between memory hierarchies using specialized hardware-accelerated instructions (lines 17, 18, and 27). Tiles of data are cooperatively loaded into the `RegTile`, which is stored in each thread's local register file.
+
+Once the data is loaded into a thread's local register file, `gemm` (in line 21) performs matrix multiplication using TensorCore's warp-level matrix multiply-and-accumulate (WMMA) instruction on the `BaseTile`s. The specialized data distribution required by TensorCore is automatically maintained by TileFusion's `RegTile` layout.
+
+After the `gemm` operation is completed, the data in the `RegTile` is cooperatively stored back from registers to global memory using the `RegToGlobalStorer`.
 
 ## More Examples
 

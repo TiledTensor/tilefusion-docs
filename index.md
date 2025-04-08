@@ -4,15 +4,24 @@ nav_order: 1
 ---
 
 <div align="center">
-  <img src="assets/TileFusion-logo.png" width="120"/>
+  <img src="assets/images/logos/TileFusion-logo.png" width="120"/>
 </div>
 
-# Simplifying Kernel Fusion with Tile Processing
+# TileFusion: A High-Level, Modular Tile Processing Library
 
-**TileFusion** is a highly efficient C++ macro kernel template library designed to elevate the level of abstraction in CUDA C for processing tiles. It is designed to be:
+**TileFusion**, derived from the research presented in this [paper](https://dl.acm.org/doi/pdf/10.1145/3694715.3695961), is an efficient C++ macro kernel library designed to elevate the level of abstraction in CUDA C for tile processing. The library offers:
 
-- **Higher-Level Programming**: TileFusion offers a set of device kernels for transferring tiles between the CUDA device's three memory hierarchies and for computing tiles.
-- **Modularity**: TileFusion enables users to construct their applications by processing larger tiles in time and space using the provided BaseTiles.
-- **Efficiency**: TileFusion offers highly efficient implementations of these device kernels.
+- **Higher-Level Programming Constructs**: TileFusion supports tiles across the three-level GPU memory hierarchy, providing device kernels for transferring tiles between CUDA memory hierarchies and for tile computation.
+- **Modularity**: TileFusion enables applications to process larger tiles built out of BaseTiles in both time and space, abstracting away low-level hardware details.
+- **Efficiency**: The library's BaseTiles are designed to match TensorCore instruction shapes and encapsulate hardware-specific performance parameters, ensuring optimal utilization of TensorCore capabilities.
 
-TileFusion adopts a hardware bottom-up approach by building kernels around the core concept of the **BaseTile**. The shapes of these BaseTiles align with TensorCore's instruction shape and encapsulate hardware-dependent performance parameters to optimally utilize TensorCore's capabilities. Serving as building blocks, these BaseTiles are then combined to construct larger tiles in both temporal and spatial dimensions, enabling users to process larger tiles composed of BaseTiles for their applications.
+A core design goal of **TileFusion** is to allow users to understand and utilize provided primitives using logical concepts, without delving into low-level hardware complexities. The library rigorously separates data flow across the memory hierarchy from the configuration of individual macro kernels. This design choice enables performance enhancements through tuning, which operates in three possible ways:
+
+- **Structural Tuning**: Designs various data flows while keeping kernel configurations unchanged.
+- **Parameterized Tuning**: Adjusts kernel configurations while maintaining the same data flow.
+- **Combined Tuning**: Integrates both structural and parameterized tuning approaches simultaneously.
+
+In summary, **TileFusion** encourages algorithm developers to focus on designing the data flow of their algorithms using efficient tile primitives. It can be utilized as:
+
+1. A lightweight C++ library with header-only usage, offering superior readability, modifiability, and debuggability.
+2. A Python library with pre-existing kernels bound to PyTorch.
