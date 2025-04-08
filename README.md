@@ -1,6 +1,6 @@
 # TileFusion Documentation
 
-This repository contains the documentation website for the [TileFusion](https://github.com/yourusername/tilefusion) library. The documentation is built using [Jekyll](https://jekyllrb.com/) and hosted on GitHub Pages.
+This repository contains the documentation website for the [TileFusion](https://github.com/microsoft/TileFusion) library. The documentation is built using [Jekyll](https://jekyllrb.com/) and hosted on GitHub Pages.
 
 ## 🚀 Getting Started
 
@@ -15,7 +15,7 @@ This repository contains the documentation website for the [TileFusion](https://
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/yourusername/tilefusion-docs.git
+   git clone https://github.com/TiledTensor/tilefusion-docs
    cd tilefusion-docs
    ```
 
