@@ -12,6 +12,7 @@ gem "liquid", "~> 4.0"
 gem "sassc", "~> 2.4.0", :platform => :ruby
 gem "nokogiri", "~> 1.15.0"
 gem "rouge", "~> 4.2.0"
+gem "jekyll-toc", "~> 0.3.0"
 
 group :development do
   gem "webrick"

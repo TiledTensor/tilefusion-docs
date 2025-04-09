@@ -1,0 +1,88 @@
+{% capture tocWorkspace %}
+  {% comment %}
+    Version 1.0.8
+      https://github.com/allejo/jekyll-toc
+
+    Usage:
+      {% include toc.html html=content sanitize=true class="inline_toc" id="my_toc" h_min=2 h_max=3 ordered=true %}
+
+    Parameters:
+      html         (string) - the HTML of compiled markdown ready to be passed to the TOC
+      sanitize     (bool)   - when set to true, the TOC will be sanitized. This is useful if you're using markdown headers with HTML in them, like "[Some](http://url.com)".
+      class        (string) - a CSS class added to the TOC
+      id           (string) - an ID to add to the TOC
+      h_min        (int)    - the minimum TOC header level to use; any header lower than this value will be ignored (e.g. h_min=2 will ignore h1 headers)
+      h_max        (int)    - the maximum TOC header level to use; any header greater than this value will be ignored (e.g. h_max=2 will ignore h3 headers)
+      ordered      (bool)   - when set to true, an ordered list will be outputted instead of an unordered list
+      item_class   (string) - add custom class(es) for each list item; has support for '%level%' placeholder, which is the current heading level
+      baseurl      (string) - add a base url to the TOC links for when your TOC page is in a subdirectory of your site
+      anchor_class (string) - add custom class(es) for each anchor element
+      skipNoIDs    (bool)   - skip headers that do not have an `id` attribute
+  {% endcomment %}
+
+  {% capture my_toc %}{% endcapture %}
+  {% assign orderedList = include.ordered | default: false %}
+  {% assign minHeader = include.h_min | default: 1 %}
+  {% assign maxHeader = include.h_max | default: 6 %}
+  {% assign nodes = include.html | split: '<h' %}
+  {% assign firstHeader = true %}
+
+  {% capture listModifier %}{% if orderedList %}1.{% else %}-{% endif %}{% endcapture %}
+
+  {% for node in nodes %}
+    {% if node == "" %}
+      {% continue %}
+    {% endif %}
+
+    {% assign headerLevel = node | replace: '"', '' | slice: 0, 1 | times: 1 %}
+
+    {% if headerLevel < minHeader or headerLevel > maxHeader %}
+      {% continue %}
+    {% endif %}
+
+    {% if firstHeader %}
+      {% assign firstHeader = false %}
+      {% assign minHeader = headerLevel %}
+    {% endif %}
+
+    {% assign indentAmount = headerLevel | minus: minHeader | add: 1 %}
+    {% assign _workspace = node | split: '</h' %}
+
+    {% assign _idWorkspace = _workspace[0] | split: 'id="' %}
+    {% assign _idWorkspace = _idWorkspace[1] | split: '"' %}
+    {% assign html_id = _idWorkspace[0] %}
+
+    {% assign _classWorkspace = _workspace[0] | split: 'class="' %}
+    {% assign _classWorkspace = _classWorkspace[1] | split: '"' %}
+    {% assign html_class = _classWorkspace[0] %}
+
+    {% if html_id contains "page-title" %}
+      {% continue %}
+    {% endif %}
+
+    {% capture _hAttrToStrip %}{{ _workspace[0] | split: '>' | first }}>{% endcapture %}
+    {% assign header = _workspace[0] | replace: _hAttrToStrip, '' %}
+
+    {% assign space = '' %}
+    {% for i in (1..indentAmount) %}
+      {% assign space = space | prepend: '  ' %}
+    {% endfor %}
+
+    {% unless include.item_class == blank %}
+      {% capture listItemClass %}{:.{{ include.item_class | replace: '%level%', headerLevel }}}{% endcapture %}
+    {% endunless %}
+
+    {% capture my_toc %}{{ my_toc }}
+{{ space }}{{ listModifier }} {{ listItemClass }} [{{ header | strip_html | strip | escape }}]({% if include.baseurl %}{{ include.baseurl }}{% endif %}#{{ html_id }}){% endcapture %}
+  {% endfor %}
+
+  {% if include.class %}
+    {% capture my_toc %}{:.{{ include.class }}}
+{{ my_toc | lstrip }}{% endcapture %}
+  {% endif %}
+
+  {% if include.id %}
+    {% capture my_toc %}{: #{{ include.id }}}
+{{ my_toc | lstrip }}{% endcapture %}
+  {% endif %}
+{% endcapture %}{% assign tocWorkspace = '' %}<div class="toc">{{ my_toc | markdownify }}</div>

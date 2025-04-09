@@ -39,6 +39,7 @@ minima:
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+  - jekyll-toc
 
 header_pages:
   - docs/index.md
@@ -72,3 +73,36 @@ sass:
 # Include custom CSS
 head_scripts:
   - /assets/css/custom.css
+
+# TOC configuration
+toc:
+  min_level: 1
+  max_level: 3
+  no_toc_section_class: no_toc
+  list_class: toc
+  sublist_class: sub
+  item_class: item
+  item_prefix: ""
+  anchor_class: anchor
+  item_class_active: active
+
+# Default layout for markdown files
+defaults:
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+  -
+    scope:
+      path: "docs"
+      type: "pages"
+    values:
+      layout: "doc"

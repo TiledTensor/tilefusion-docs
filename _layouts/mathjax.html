@@ -4,43 +4,46 @@ layout: default
 
 <style>
 /* Table of Contents Styling */
-.page-content > .wrapper > ul:first-of-type {
-  background-color: #e2e8f0 !important;
-  border: 1px solid #cbd5e1 !important;
+.toc {
+  background-color: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
   border-radius: 8px !important;
   padding: 1.8em !important;
   margin: 2em 0 !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
-  list-style-type: none !important;
   position: relative !important;
   overflow: hidden !important;
   font-size: 1.05em !important;
+  background-image: linear-gradient(to bottom right, #f8fafc, #f1f5f9) !important;
 }
 
-.page-content > .wrapper > ul:first-of-type > li {
+.toc ul {
+  list-style-type: none !important;
+  padding-left: 0 !important;
+}
+
+.toc > ul > li {
   margin: 0.7em 0 !important;
   line-height: 1.6 !important;
   font-weight: bold !important;
   font-size: 1.05em !important;
 }
 
-.page-content > .wrapper > ul:first-of-type a {
-  color: #2563eb !important;
+.toc a {
   text-decoration: none !important;
   transition: all 0.2s ease !important;
   font-weight: bold !important;
   font-size: 1.05em !important;
 }
 
-.page-content > .wrapper > ul:first-of-type a:hover {
-  color: #1d4ed8 !important;
+.toc a:hover {
   text-decoration: none !important;
-  background-color: rgba(37, 99, 235, 0.1) !important;
+  background-color: rgba(59, 130, 246, 0.1) !important;
   padding: 0.2em 0.4em !important;
   border-radius: 4px !important;
 }
 
-.page-content > .wrapper > ul:first-of-type ul {
+.toc ul ul {
   margin-left: 1.5em !important;
   margin-top: 0.5em !important;
   border-left: 3px solid #3b82f6 !important;
@@ -48,19 +51,49 @@ layout: default
   list-style-type: none !important;
 }
 
-.page-content > .wrapper > ul:first-of-type ul li {
+.toc ul ul li {
   margin: 0.4em 0 !important;
   font-size: 1em !important;
 }
 
-.page-content > .wrapper > ul:first-of-type ul li a {
-  color: #0f766e !important;
-  font-weight: normal !important;
-  font-size: 1em !important;
+/* Level 1 items - Blue */
+.toc > ul > li > a {
+  color: #3b82f6 !important;
+}
+.toc > ul > li > a:hover {
+  color: #2563eb !important;
 }
 
-.page-content > .wrapper > ul:first-of-type ul li a:hover {
-  color: #1d4ed8 !important;
+/* Level 2 items - Green */
+.toc ul ul > li > a {
+  color: #10b981 !important;
+}
+.toc ul ul > li > a:hover {
+  color: #059669 !important;
+}
+
+/* Level 3 items - Purple */
+.toc ul ul ul > li > a {
+  color: #8b5cf6 !important;
+}
+.toc ul ul ul > li > a:hover {
+  color: #7c3aed !important;
+}
+
+/* Level 4 items - Orange */
+.toc ul ul ul ul > li > a {
+  color: #f59e0b !important;
+}
+.toc ul ul ul ul > li > a:hover {
+  color: #d97706 !important;
+}
+
+/* Level 5 items - Pink */
+.toc ul ul ul ul ul > li > a {
+  color: #ec4899 !important;
+}
+.toc ul ul ul ul ul > li > a:hover {
+  color: #db2777 !important;
 }
 
 /* Code Block Styling */
@@ -86,10 +119,10 @@ pre code {
   padding: 0 !important;
 }
 
-/* Syntax highlighting colors for C++ */
+/* Syntax highlighting colors for classical theme */
 .highlight {
   background: #1a1a1a !important;
-  color: #e2e8f0 !important;
+  color: #d4d4d4 !important;
 }
 
 .highlight .c1 { color: #6a9955 !important; } /* Comment */
@@ -201,20 +234,27 @@ pre code {
 
 <div class="page-content">
   <div class="wrapper">
-    {{ content }}
+    {% assign has_toc = content | split: '<div id="toc"' | size | minus: 1 %}
+    {% if page.toc != false and has_toc == 0 %}
+      {% include toc.html html=content %}
+    {% endif %}
+    <div class="markdown-body">
+      {{ content }}
+    </div>
   </div>
 </div>
 
 <script>
-  MathJax = {
+  window.MathJax = {
     tex: {
       inlineMath: [['$', '$'], ['\\(', '\\)']],
       displayMath: [['$$', '$$'], ['\\[', '\\]']],
-      processEscapes: true
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
     }
   };
 </script>
-
-<script type="text/javascript" id="MathJax-script" async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
