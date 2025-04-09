@@ -1,0 +1,67 @@
+---
+layout: default
+---
+
+{% include toc-styles.html %}
+
+<style>
+/* Custom dark theme for code blocks */
+pre {
+  background-color: #1a1a1a !important;
+  border-radius: 8px !important;
+  padding: 1.2em !important;
+  margin: 1.5em 0 !important;
+  overflow-x: auto !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid #333 !important;
+}
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+  font-size: 0.9em !important;
+  color: #e2e8f0 !important;
+}
+
+pre code {
+  color: #e2e8f0 !important;
+  background: none !important;
+  padding: 0 !important;
+}
+
+/* Syntax highlighting colors for Monokai theme */
+.highlight {
+  background: #1a1a1a !important;
+  color: #e2e8f0 !important;
+}
+
+.highlight .c1 { color: #75715e !important; } /* Comment */
+.highlight .k { color: #f92672 !important; } /* Keyword */
+.highlight .n { color: #f8f8f2 !important; } /* Name */
+.highlight .s { color: #a6e22e !important; } /* String */
+.highlight .mi { color: #ae81ff !important; } /* Number */
+.highlight .nb { color: #f92672 !important; } /* Built-in */
+.highlight .nc { color: #a6e22e !important; } /* Class */
+.highlight .nf { color: #a6e22e !important; } /* Function */
+.highlight .p { color: #f8f8f2 !important; } /* Punctuation */
+
+/* Inline code styling */
+:not(pre) > code {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  padding: 0.2em 0.4em !important;
+  border-radius: 4px !important;
+  font-size: 0.9em !important;
+}
+</style>
+
+<article class="post">
+  <header class="post-header">
+    <h1 class="post-title">{{ page.title | escape }}</h1>
+  </header>
+
+  <div class="page-content">
+    <div class="wrapper">
+      {{ content }}
+    </div>
+  </div>
+</article>

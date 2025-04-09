@@ -1,9 +1,9 @@
 ---
-layout: mathjax
+layout: doc
 title: Program Concepts in TileFusion
 ---
 
-TileFusion operates based on four core concepts: Tile, Layout, TileIterator, and Loader/Storer.
+TileFusion operates on four core concepts: Tile, Layout, TileIterator, and Loader/Storer, which facilitate the transfer of tiles between memory hierarchies.
 
 ## Types
 
@@ -40,7 +40,7 @@ Shown in Figure 2, Tiled matrix layout can be understood as a matrix layout comp
   Fig 3: The TensorCore register tile layout.
 </div>
 
-Shown in Figure 3, the `BaseTileRowMajor` and `BaseTileColumnMajor` are specialized layouts designed for Tensor Core MMA operations. These register layouts combine a BaseTileMatrixLayout with a matrix layout. The rule here is that **arbitrary nested composability isn’t supported; composition can only be performed once**.
+Shown in Figure 3, the `BaseTileRowMajor` and `BaseTileColumnMajor` are specialized layouts designed for Tensor Core MMA operations. These register layouts combine a BaseTileMatrixLayout with a matrix layout. The rule here is that **arbitrary nested composability isn't supported; composition can only be performed once**.
 
 ### TileIterator
 
@@ -61,7 +61,7 @@ using SIteratorA = STileIterator<SharedA, TileShape<kTM, kRK>>;
 
 Given that a tile represents a larger data region, the tile shape specifies the dimensions of a smaller tile. The TileIterator then divides the larger tile into smaller tiles along each dimension.
 
-## Tile Transfer with Loaders and Storers
+## Tile Transfer with Loader and Storer
 
 <div align="center">
   <img src="../../assets/images/loader_and_storer.png" width="600"/><br>

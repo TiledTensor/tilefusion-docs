@@ -86,7 +86,7 @@ pre code {
   padding: 0 !important;
 }
 
-/* Syntax highlighting colors for C++ */
+/* Syntax highlighting colors for Monokai theme */
 .highlight {
   background: #1a1a1a !important;
   color: #e2e8f0 !important;
@@ -199,22 +199,4 @@ pre code {
 }
 </style>
 
-<div class="page-content">
-  <div class="wrapper">
-    {{ content }}
-  </div>
-</div>
-
-<script>
-  MathJax = {
-    tex: {
-      inlineMath: [['$', '$'], ['\\(', '\\)']],
-      displayMath: [['$$', '$$'], ['\\[', '\\]']],
-      processEscapes: true
-    }
-  };
-</script>
-
-<script type="text/javascript" id="MathJax-script" async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-</script>
+{{ content }}

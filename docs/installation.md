@@ -3,6 +3,7 @@ layout: page
 title: Installation
 nav_order: 2
 has_children: false
+no_toc: true
 ---
 
 TileFusion can be used as a lightweight C++ library with header-only usage, or it can be built as a Python library. You can choose to build either one.

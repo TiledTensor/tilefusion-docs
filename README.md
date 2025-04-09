@@ -28,7 +28,7 @@ This repository contains the documentation website for the [TileFusion](https://
 3. Start the local server:
 
    ```bash
-   bundle exec jekyll serve
+   bundle exec jekyll serve --baseurl ""
    ```
 
 4. Visit `http://localhost:4000` in your browser to view the documentation.

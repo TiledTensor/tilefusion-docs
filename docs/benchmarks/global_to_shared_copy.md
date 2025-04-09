@@ -1,3 +1,10 @@
+---
+layout: doc
+title: Data Transfer Between Global and Shared Memory
+parent: Benchmarks
+nav_order: 1
+---
+
 This preliminary test evaluates the performance of transferring a row-major data tile containing half-precision floating-point values between global memory and shared memory. The transfer process involves loading the data tile into shared memory and subsequently storing it back to global memory. This cycle is repeated 100 times to measure performance.
 
 Performance is assessed based on the total time required to complete the 100 data tile transfers.

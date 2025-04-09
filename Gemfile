@@ -10,6 +10,8 @@ gem "jekyll-seo-tag", "~> 2.8"
 gem "kramdown", "~> 2.3.1"
 gem "liquid", "~> 4.0"
 gem "sassc", "~> 2.4.0", :platform => :ruby
+gem "nokogiri", "~> 1.15.0"
+gem "rouge", "~> 4.2.0"
 
 group :development do
   gem "webrick"

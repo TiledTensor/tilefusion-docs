@@ -1,78 +1,6 @@
-.site-footer {
-  background-color: #f8f9fa;
-  padding: 40px 0;
-  color: #333;
-  border-top: 1px solid #e9ecef;
-}
-
-.footer-header {
-  margin-bottom: 30px;
-}
-
-.footer-heading {
-  font-size: 24px;
-  margin-bottom: 15px;
-  color: #0078d4; /* Microsoft blue */
-}
-
-.footer-content {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-bottom: 30px;
-  width: 100%; /* Ensure full width */
-}
-
-.footer-col {
-  flex: 1;
-  min-width: 200px;
-  padding: 0 15px;
-  margin-bottom: 20px;
-}
-
-.footer-col h3 {
-  font-size: 18px;
-  margin-bottom: 15px;
-  color: #0078d4;
-}
-
-.footer-col ul {
-  list-style: none;
-  margin-left: 0;
-  padding-left: 0;
-}
-
-.footer-col ul li {
-  margin-bottom: 8px;
-}
-
-.footer-bottom {
-  clear: both; /* Ensure footer-bottom appears after all floating elements */
-  width: 100%; /* Ensure full width */
-  text-align: center;
-  border-top: 1px solid #e9ecef;
-  padding-top: 20px;
-  font-size: 14px;
-  color: #666;
-}
-
-body {
-  font-family: 'Roboto', sans-serif;
-}
-
-@media screen and (max-width: 600px) {
-  .footer-content {
-    flex-direction: column;
-  }
-
-  .footer-col {
-    width: 100%;
-    padding: 0;
-  }
-}
-
+<style>
 /* Table of Contents Styling */
-.markdown-body > ul:first-of-type {
+.page-content > .wrapper > ul:first-of-type {
   background-color: #1a1f2e !important;
   border: 1px solid #2d3748 !important;
   border-radius: 8px !important;
@@ -80,17 +8,20 @@ body {
   margin: 2em 0 !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
   list-style-type: none !important;
+  position: relative !important;
+  overflow: hidden !important;
+  font-size: 1.05em !important;
   background-image: linear-gradient(to bottom right, #1a1f2e, #2d3748) !important;
 }
 
-.markdown-body > ul:first-of-type li {
+.page-content > .wrapper > ul:first-of-type > li {
   margin: 0.7em 0 !important;
   line-height: 1.6 !important;
   font-weight: bold !important;
   font-size: 1.05em !important;
 }
 
-.markdown-body > ul:first-of-type a {
+.page-content > .wrapper > ul:first-of-type a {
   color: #60a5fa !important;
   text-decoration: none !important;
   transition: all 0.2s ease !important;
@@ -98,7 +29,7 @@ body {
   font-size: 1.05em !important;
 }
 
-.markdown-body > ul:first-of-type a:hover {
+.page-content > .wrapper > ul:first-of-type a:hover {
   color: #93c5fd !important;
   text-decoration: none !important;
   background-color: rgba(59, 130, 246, 0.2) !important;
@@ -106,7 +37,7 @@ body {
   border-radius: 4px !important;
 }
 
-.markdown-body > ul:first-of-type ul {
+.page-content > .wrapper > ul:first-of-type ul {
   margin-left: 1.5em !important;
   margin-top: 0.5em !important;
   border-left: 3px solid #3b82f6 !important;
@@ -114,22 +45,22 @@ body {
   list-style-type: none !important;
 }
 
-.markdown-body > ul:first-of-type ul li {
+.page-content > .wrapper > ul:first-of-type ul li {
   margin: 0.4em 0 !important;
   font-size: 1em !important;
 }
 
-.markdown-body > ul:first-of-type ul li a {
+.page-content > .wrapper > ul:first-of-type ul li a {
   color: #67e8f9 !important;
   font-weight: normal !important;
   font-size: 1em !important;
 }
 
-.markdown-body > ul:first-of-type ul li a:hover {
+.page-content > .wrapper > ul:first-of-type ul li a:hover {
   color: #93c5fd !important;
 }
 
-/* Custom dark theme for code blocks */
+/* Code Block Styling */
 pre {
   background-color: #1a1a1a !important;
   border-radius: 8px !important;
@@ -156,6 +87,7 @@ pre code {
 .highlight {
   background: #1a1a1a !important;
   color: #e2e8f0 !important;
+  position: relative !important;
 }
 
 .highlight .c1 { color: #75715e !important; } /* Comment */
@@ -177,8 +109,54 @@ pre code {
   font-size: 0.9em !important;
 }
 
-.page-content > .wrapper > ul:first-of-type::before,
-.markdown-body > ul:first-of-type::before {
-  content: none !important;
+/* Line numbers styling */
+.highlight {
+  background: #1a1a1a !important;
+  color: #e2e8f0 !important;
+  position: relative !important;
+}
+
+.highlight pre {
+  background: transparent !important;
+  margin: 0 !important;
+  padding: 1em !important;
+  overflow-x: auto !important;
+}
+
+.highlight code {
+  background: transparent !important;
+  padding: 0 !important;
+  white-space: pre !important;
+}
+
+.highlight table {
+  margin: 0 !important;
+  border-collapse: collapse !important;
+  width: 100% !important;
+}
+
+.highlight td {
+  padding: 0 !important;
+}
+
+.highlight td.lineno {
+  color: #6c7086 !important;
+  padding-right: 1em !important;
+  border-right: 1px solid #2d3748 !important;
+  text-align: right !important;
+  user-select: none !important;
+  width: 1% !important;
+  white-space: nowrap !important;
+}
+
+.highlight td.code {
+  padding-left: 1em !important;
+}
+
+/* Remove the CSS counter-based line numbers styling */
+.highlight .line-numbers-rows,
+.highlight .line-numbers-rows > span,
+.highlight .line-numbers-rows > span:before {
   display: none !important;
 }
+</style>

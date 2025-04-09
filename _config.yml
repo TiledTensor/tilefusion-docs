@@ -23,6 +23,12 @@ google_fonts:
 markdown: kramdown
 kramdown:
   math_engine: mathjax
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: 'highlight'
+    block:
+      line_numbers: false
+      start_line: 1
 theme: minima
 
 minima:
@@ -45,3 +51,24 @@ header_pages:
 aux_links:
   "TileFusion on GitHub":
     - "//github.com/microsoft/TileFusion"
+
+# Rouge syntax highlighting
+rouge:
+  line_numbers: false
+  span:
+    line_numbers: false
+  block:
+    line_numbers: false
+  css_class: 'highlight'
+
+# Custom CSS
+sass:
+  style: compressed
+  sass_dir: _sass
+  load_paths:
+    - _sass
+    - assets/css
+
+# Include custom CSS
+head_scripts:
+  - /assets/css/custom.css
