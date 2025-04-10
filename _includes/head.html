@@ -1,0 +1,5 @@
+{% comment %}
+  Overrides theme's head.html to add our custom CSS link AFTER theme CSS.
+{% endcomment %}
+{% include _default_head.html %}
+<link rel="stylesheet" href="{{ '/assets/css/custom.css' | relative_url }}">

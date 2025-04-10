@@ -50,24 +50,37 @@ We will further discuss the second parameter of `RegTile` in the next section: *
 
 ### Tile Layout
 
-The shape of a tile defines a high-dimensional space, where each coordinate in this space can be represented by an integer tuple. A Tile Layout is a function that maps this integer tuple to an integer, providing a comprehensive and logical description of data, threads, warps, and other resources. In TileFusion, there are three types of layouts: **Matrix Layout**, **Tiled Matrix Layout**, and **Register Tile Layout**.
+The shape of a tile defines a high-dimensional space, with each coordinate in this space represented by an integer tuple. The layout of a tile is a function mapping this integer tuple to an integer, offering a comprehensive and logical description of data, threads, warps, and other resources. In TileFusion, there are conceptually three types of layouts: **Matrix Layout**, **Tiled Matrix Layout**, and **Register Tile Layout**.
 
-These three layouts are inter-composable, but an important simplification we made is that arbitrary nested composability is not supported; composition can be performed only once.
+<p class="highlight-note">These three layouts are inter-composable, but an important simplification we made is that arbitrary nested composability is not supported; composition can be performed only once. This will be explained in the examples below.</p>
 
 #### Matrix Layout
 
-Matrix Layout is characterized by shape and strides, this layout has two specializations: Row-major and Column-major. It is used for the efficient access of global and shared memory tiles.
+The [matrix layout](https://github.com/microsoft/TileFusion/blob/master/include/types/layout.hpp#L48) is characterized by shape and strides. It is declared as:
+
+```cpp
+using Layout = MatrixLayout<128 /*Rows*/, 256 /*Columns*/,
+                            256 /*Row Stride*/, 1 /*Column Stride*/>;
+```
+
+As shown in Figure 1, the matrix layout is characterized by its shape and strides, with two specializations: `RowMajor` and `ColMajor`. The <span class="text-red">matrix layout is used for global and shared memory tiles</span>, or to describe how the threads or warps are numbered.
 
 <div align="center">
   <img src="../../assets/images/matrix_layout.png" width="200"/><br>
   Fig 1: The matrix layout used for the global and shared memory tiles.
 </div>
 
-Shown in Figure 1, Matrix Layout is characterized by shape and strides. This layout has two specializations: Row-major and Column-major. It is used for the efficient access of global and shared memory tiles.
-
 #### Tiled Matrix Layout
 
-Tiled matrix layout can be understood as a matrix layout composed with another matrix layout. This layout facilitates the efficient access of shared memory tiles or describes the thread or warp layout.
+As shown in Figure 2, the <span class="text-red">tiled matrix layout specifically facilitates the efficient access of shared memory tiles</span>, and can be understood as a matrix layout composed with another matrix layout.
+
+A shared memory tile with a shape of `[64, 64]` and a `RowMajor` has a tiled matrix layout internally.
+
+```cpp
+using Shared = SharedTile<float, RowMajor<64, 64>, is_swizzled=true>;
+```
+
+Figure 2 shows the high-level idea of the tiled matrix layout.
 
 <div align="center">
   <img src="../../assets/images/tiled_matrix_layout.png" width="200"/><br>
@@ -75,18 +88,17 @@ Tiled matrix layout can be understood as a matrix layout composed with another m
 </div>
 <br>
 
-Shown in Figure 2, Tiled matrix layout can be understood as a matrix layout composed with another matrix layout. This layout facilitates the efficient access of shared memory tiles or describes the thread or warp layout.
-
 #### Register Tile Layout
 
-Register Tile Layout is designed for the efficient access of TensorCore register tiles.
+The <span class="text-red">register tile layout is specifically designed for data feeding to TensorCore</span>.
 
 <div align="center">
   <img src="../../assets/images/register_tile_layout.png" width="500"/><br>
   Fig 3: The TensorCore register tile layout.
 </div>
+<br>
 
-Shown in Figure 3, the `BaseTileRowMajor` and `BaseTileColumnMajor` are specialized layouts designed for Tensor Core MMA operations. These register layouts combine a BaseTileMatrixLayout with a matrix layout. The rule here is that **arbitrary nested composability isn't supported; composition can only be performed once**.
+As shown in Figure 3, the `BaseTileRowMajor` and `BaseTileColumnMajor` are specialized for Tensor Core MMA operations. Register layouts, based on these, can be understood as a depth-two nested array with a `BaseTileMatrixLayout` as the inner layout and a `MatrixLayout` as the outer layout.
 
 ### GlobalTileIterator and SharedTileIterator
 
@@ -107,7 +119,7 @@ using SIteratorA = STileIterator<SharedA, TileShape<kTM, kRK>>;
 
 Given that a tile represents a larger data region, the tile shape specifies the dimensions of a smaller tile. The TileIterator then divides the larger tile into smaller tiles along each dimension.
 
-## Tile Transfer with Loader and Storer
+## Loader and Storer for Tiles
 
 <div align="center">
   <img src="../../assets/images/loader_and_storer.png" width="600"/><br>

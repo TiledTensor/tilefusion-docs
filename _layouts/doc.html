@@ -5,16 +5,17 @@ layout: default
 <style>
 /* Table of Contents Styling */
 .toc {
-  background-color: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 8px !important;
-  padding: 1.8em !important;
-  margin: 2em 0 !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
-  position: relative !important;
-  overflow: hidden !important;
-  font-size: 1.05em !important;
-  background-image: linear-gradient(to bottom right, #f8fafc, #f1f5f9) !important;
+  /* background-color: #f8fafc !important; */ /* Optional: Remove background */
+  /* border: 1px solid #e2e8f0 !important; */ /* Optional: Remove border */
+  border-left: 2px solid #e2e8f0 !important; /* Keep a subtle left border */
+  border-radius: 0px !important; /* Optional: Remove rounding */
+  padding: 1em 0 1em 1em !important; /* Adjust padding */
+  margin: 0 !important;
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important; */ /* Optional: Remove shadow */
+  /* position: relative !important; */ /* Already handled by sidebar */
+  /* overflow: hidden !important; */ /* Already handled by sidebar */
+  font-size: 0.9rem !important; /* Smaller base font size */
+  /* background-image: none !important; */ /* Optional: Remove gradient */
 }
 
 .toc ul {
@@ -23,77 +24,81 @@ layout: default
 }
 
 .toc > ul > li {
-  margin: 0.7em 0 !important;
-  line-height: 1.6 !important;
-  font-weight: bold !important;
-  font-size: 1.05em !important;
+  margin: 0.3em 0 !important; /* Reduce vertical margin */
+  line-height: 1.4 !important; /* Adjust line height */
+  font-weight: 500 !important; /* Slightly less bold */
+  font-size: 1em !important; /* Relative to .toc base */
 }
 
 .toc a {
   text-decoration: none !important;
-  transition: all 0.2s ease !important;
-  font-weight: bold !important;
-  font-size: 1.05em !important;
+  transition: color 0.2s ease !important; /* Simpler transition */
+  font-weight: 500 !important;
+  font-size: 1em !important;
+  display: block; /* Make link fill width for better hover */
+  padding: 0.1em 0.4em !important; /* Adjust padding */
+  margin-left: -0.4em; /* Counteract padding for alignment */
+  border-radius: 4px !important;
 }
 
 .toc a:hover {
   text-decoration: none !important;
   background-color: rgba(59, 130, 246, 0.1) !important;
-  padding: 0.2em 0.4em !important;
-  border-radius: 4px !important;
+  /* Keep hover background */
 }
 
 .toc ul ul {
-  margin-left: 1.5em !important;
-  margin-top: 0.5em !important;
-  border-left: 3px solid #3b82f6 !important;
-  padding-left: 1em !important;
+  margin-left: 0.2em !important; /* Further reduce base margin to shift line left */
+  margin-top: 0.3em !important;
+  border-left: 1px solid #9ca3af !important; /* More visible gray vertical line */
+  padding-left: 0.8em !important; /* Keep padding between line and text */
   list-style-type: none !important;
 }
 
 .toc ul ul li {
-  margin: 0.4em 0 !important;
-  font-size: 1em !important;
+  margin: 0.2em 0 !important;
+  font-size: 0.95em !important;
+  /* padding-left: 0.2em; */ /* Optional: add slight padding to li if needed */
 }
 
 /* Level 1 items - Blue */
 .toc > ul > li > a {
-  color: #3b82f6 !important;
+  color: #1e40af !important;
 }
 .toc > ul > li > a:hover {
+  color: #1e3a8a !important;
+}
+
+/* Level 2 items - Blue */
+.toc ul ul > li > a {
+  color: #1d4ed8 !important;
+}
+.toc ul ul > li > a:hover {
+  color: #1e40af !important;
+}
+
+/* Level 3 items - Blue */
+.toc ul ul ul > li > a {
+  color: #2563eb !important;
+}
+.toc ul ul ul > li > a:hover {
+  color: #1d4ed8 !important;
+}
+
+/* Level 4 items - Blue */
+.toc ul ul ul ul > li > a {
+  color: #3b82f6 !important;
+}
+.toc ul ul ul ul > li > a:hover {
   color: #2563eb !important;
 }
 
-/* Level 2 items - Green */
-.toc ul ul > li > a {
-  color: #10b981 !important;
-}
-.toc ul ul > li > a:hover {
-  color: #059669 !important;
-}
-
-/* Level 3 items - Purple */
-.toc ul ul ul > li > a {
-  color: #8b5cf6 !important;
-}
-.toc ul ul ul > li > a:hover {
-  color: #7c3aed !important;
-}
-
-/* Level 4 items - Orange */
-.toc ul ul ul ul > li > a {
-  color: #f59e0b !important;
-}
-.toc ul ul ul ul > li > a:hover {
-  color: #d97706 !important;
-}
-
-/* Level 5 items - Pink */
+/* Level 5 items - Blue */
 .toc ul ul ul ul ul > li > a {
-  color: #ec4899 !important;
+  color: #60a5fa !important;
 }
 .toc ul ul ul ul ul > li > a:hover {
-  color: #db2777 !important;
+  color: #3b82f6 !important;
 }
 
 /* Code Block Styling */
@@ -201,7 +206,7 @@ pre code {
 .highlight .il { color: #b5cea8 !important; } /* Literal number integer long */
 
 /* Inline code styling */
-:not(pre) > code {
+.doc-main-content :not(pre) > code {
   background-color: #f1f5f9 !important;
   color: #0f172a !important;
   padding: 0.2em 0.4em !important;
@@ -230,14 +235,47 @@ pre code {
 .highlight td.code {
   padding-left: 1em;
 }
+
+/* New layout styles */
+.doc-layout {
+  display: flex;
+  gap: 2em; /* Adjust gap as needed */
+  align-items: flex-start; /* Align items at the top */
+}
+
+.doc-sidebar {
+  flex: 0 0 280px; /* Fixed width for sidebar, adjust as needed */
+  position: sticky;
+  top: 2em; /* Adjust top offset, consider header height */
+  height: calc(100vh - 4em); /* Adjust height based on top offset */
+  overflow-y: auto; /* Allow scrolling within the sidebar */
+}
+
+.doc-main-content {
+  flex: 1; /* Allow main content to take remaining space */
+  min-width: 0; /* Prevent content overflow issues */
+}
+
+/* New layout styles */
+.page-content > .wrapper { /* Override theme wrapper for doc pages */
+  max-width: none;
+  padding-left: 1em; /* Add some padding back */
+  padding-right: 1em; /* Add some padding back */
+}
 </style>
 
 <div class="page-content">
   <div class="wrapper">
-    {% assign has_toc = content | split: '<div id="toc"' | size | minus: 1 %}
-    {% if page.toc != false and has_toc == 0 %}
-      {% include toc.html html=content %}
-    {% endif %}
-    {{ content }}
+    <div class="doc-layout">
+      <aside class="doc-sidebar">
+        {% assign has_toc = content | split: '<div id="toc"' | size | minus: 1 %}
+        {% if page.toc != false and has_toc == 0 %}
+          {% include toc.html html=content %}
+        {% endif %}
+      </aside>
+      <main class="doc-main-content">
+        {{ content }}
+      </main>
+    </div>
   </div>
 </div>

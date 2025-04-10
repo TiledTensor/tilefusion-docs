@@ -11,9 +11,11 @@ TileFusion approaches the efficient implementation of a kernel by:
 1. Managing dataflow over memory hierarchies.
 2. Configuring tile primitives, such as tile shapes, layouts, and other parameters.
 
+## 101 GEMM Example
+
 This is an example of a simple GEMM (General Matrix Multiplication) kernel written using TileFusion. For the complete example, please refer to [this directory](https://github.com/microsoft/TileFusion/blob/master/examples/01_gemm/01_gemm_global_reg/gemm.hpp).
 
-## Configuration of the Tile Primitives
+### Configuration of the Tile Primitives
 
 The core programming constructs in TileFusion are `Tile`, `TileLayout`, `TileIterator`, `Loader`, and `Storer`.
 
@@ -50,9 +52,9 @@ using RegC = RegTile<BaseTileRowMajor<float>, RowMajor<8, 8>>;
 using CStorer = RegToGlobalStorer<GlobalC, RegC, WarpLayout>;
 ```
 
-> **Note**: To simplify the demonstration, this example involves only two memory levels: global memory and registers. TileFusion also applies similar concepts to [SharedTile](https://github.com/microsoft/TileFusion/blob/master/include/types/shared.hpp).
+<p class="highlight-note">To simplify the demonstration, this example involves only two memory levels: global memory and registers. TileFusion also applies similar concepts to <a href="https://github.com/microsoft/TileFusion/blob/master/include/types/shared.hpp">SharedTile</a>.</p>
 
-## Dataflow Over Memory Hierarchies
+### Dataflow Over Memory Hierarchies
 
 The the kernel is defined as implementing the following dataflow over memory hierarchies:
 
