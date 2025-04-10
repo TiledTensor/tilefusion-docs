@@ -3,6 +3,7 @@ layout: page
 title: About
 nav_order: 6
 has_children: false
+has_toc: false
 ---
 
 This project is developed and maintained by the following authors:

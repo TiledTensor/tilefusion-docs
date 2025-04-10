@@ -1,5 +1,5 @@
 ---
-layout: doc
+layout: mathjax
 title: The 101 GEMM Example
 parent: Examples
 nav_order: 1

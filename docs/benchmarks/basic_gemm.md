@@ -1,5 +1,5 @@
 ---
-layout: doc
+layout: mathjax
 title: GEMM Performance
 parent: Benchmarks
 nav_order: 2

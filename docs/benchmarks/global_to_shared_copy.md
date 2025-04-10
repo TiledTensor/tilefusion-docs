@@ -1,5 +1,5 @@
 ---
-layout: doc
+layout: mathjax
 title: Data Transfer Between Global and Shared Memory
 parent: Benchmarks
 nav_order: 1

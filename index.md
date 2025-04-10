@@ -3,13 +3,21 @@ layout: home
 nav_order: 1
 ---
 
-<div align="center">
-  <img src="assets/images/logos/TileFusion-logo.png" width="120"/>
+<div class="home-header">
+  <div align="center">
+    <img src="assets/images/logos/TileFusion-logo.png" width="120"/>
+  </div>
 </div>
 
-# TileFusion: A High-Level, Modular Tile Processing Library
+<h1>TileFusion: A High-Level, Modular<br>Tile Processing Library</h1>
 
-**TileFusion**, derived from the research presented in this [paper](https://dl.acm.org/doi/pdf/10.1145/3694715.3695961), is an efficient C++ macro kernel library designed to elevate the level of abstraction in CUDA C for tile processing. The library offers:
+<div class="home-shields" align="center">
+  <a href="https://github.com/microsoft/TileFusion" target="_blank">
+    <img src="https://img.shields.io/badge/GitHub-TileFusion-blue.svg" alt="GitHub">
+  </a>
+</div>
+
+**[TileFusion](https://github.com/microsoft/TileFusion)**, derived from the research presented in this [paper](https://dl.acm.org/doi/pdf/10.1145/3694715.3695961), is an efficient C++ macro kernel library designed to elevate the level of abstraction in CUDA C for tile processing. The library offers:
 
 - **Higher-Level Programming Constructs**: TileFusion supports tiles across the three-level GPU memory hierarchy, providing device kernels for transferring tiles between CUDA memory hierarchies and for tile computation.
 - **Modularity**: TileFusion enables applications to process larger tiles built out of BaseTiles in both time and space, abstracting away low-level hardware details.

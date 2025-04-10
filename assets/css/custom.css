@@ -256,3 +256,62 @@ body .doc-main-content thead tr th {
 .text-red {
   color: #cc0000 !important; /* Or use 'red !important;' */
 }
+
+/* Home Page Header Styles */
+.home-header {
+  text-align: center;
+  margin-top: 2em;
+  margin-bottom: 0; /* Remove bottom margin */
+}
+
+/* Target the H1 immediately following the home-header */
+.home-header + h1 {
+  text-align: center; /* Center the H1 */
+  font-size: 2.5rem; /* Smaller font size for main title */
+  font-weight: 700;
+  color: #2d3748; /* Dark Grayish-Blue */
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+  line-height: 1.2;
+  border-bottom: none; /* Remove default border if present */
+}
+
+.home-shields {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 3em; /* Add margin after shields */
+}
+
+/* Hyperlink Styling */
+.doc-main-content a {
+  color: #2563eb; /* Blue link color */
+  text-decoration: none; /* Remove default underline */
+  border-bottom: 1px solid #93c5fd; /* Subtle light blue bottom border */
+  transition: color 0.2s ease, border-color 0.2s ease; /* Smooth transition */
+}
+
+.doc-main-content a:hover {
+  color: #1d4ed8; /* Darker blue on hover */
+  border-bottom-color: #1d4ed8; /* Make border darker on hover */
+}
+
+/* Style for visited links (optional) */
+.doc-main-content a:visited {
+  color: #1e40af; /* Slightly darker/different blue for visited links */
+  border-bottom-color: #60a5fa; /* Slightly different border for visited */
+}
+
+/* Highlight Note Style */
+.highlight-note {
+  background-color: #dbeafe; /* More visible light blue background */
+  border-left: 4px solid #60a5fa; /* Example: Blue left border */
+  padding: 0.8em 1em;
+  margin: 1em 0;
+  border-radius: 4px;
+}
+
+.note-prefix {
+  font-weight: bold;
+  color: #60a5fa; /* Blue color */
+  margin-right: 0.5em; /* Add some space after */
+}
