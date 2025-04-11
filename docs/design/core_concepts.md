@@ -52,7 +52,9 @@ We will further discuss the second parameter of `RegTile` in the next section: <
 
 ### Tile Layout
 
-The shape of a tile defines a high-dimensional space, with each coordinate in this space represented by an integer tuple. The layout of a tile is a function mapping this integer tuple to an integer, offering a comprehensive and logical description of data, threads, warps, and other resources. In TileFusion, there are conceptually three types of layouts: **Matrix Layout**, **Tiled Matrix Layout**, and **Register Tile Layout**.
+The shape of a tile defines a high-dimensional space, with each coordinate in this space represented by an integer tuple. The layout of a tile is a function that maps this integer tuple to an integer, providing a comprehensive and logical description of data, threads, warps, and other resources.
+
+Given that a GPU's three memory hierarchies favor different access patterns, there are conceptually three types of layouts in TileFusion: **Matrix Layout**, **Tiled Matrix Layout**, and **Register Tile Layout**.
 
 <p class="highlight-note"><span class="note-prefix">Note:</span> These three layouts are inter-composable, but an important simplification we made is that arbitrary nested composability is not supported; composition can be performed only once. This will be explained in the examples below.</p>
 
@@ -64,7 +66,6 @@ The [matrix layout](https://github.com/microsoft/TileFusion/blob/master/include/
 using Layout = MatrixLayout<64 /*Rows*/, 64 /*Columns*/,
                             64 /*Row Stride*/, 1 /*Column Stride*/>;
 
-// usage:
 // layout is a callable function that maps a tuple of integers to an integer
 Layout layout;
 for (int i = 0; i < 64; ++i) {
@@ -80,11 +81,13 @@ This is equivalent to:
 using Layout = RowMajor<64, 64>;
 ```
 
-As illustrated in Figure 1, the default element order of the above matrix layout follows the conventional row-major format.
+As illustrated in <a href="#figure-1">Figure 1</a>, the default element order of the above matrix layout follows the conventional row-major format.
 
-<div align="center">
-  <img src="../../assets/images/matrix_layout.png" width="200"/><br>
-  Fig 1: The row-major matrix layout.
+<div align="center" id="figure-1">
+  <a href="../../assets/images/matrix_layout.png" target="_blank">
+    <img src="../../assets/images/matrix_layout.png" width="200"/>
+  </a><br>
+  Figure 1: The row-major matrix layout.
 </div>
 <br>
 
@@ -113,11 +116,13 @@ A shared memory tile with a shape of `[64, 64]` and a `RowMajor` has a tiled mat
 using Shared = SharedTile<float, RowMajor<64, 64>, is_swizzled=true>;
 ```
 
-For the shared memory tile mentioned above, Figure 2 demonstrates how data is stored in the tiled matrix layout.
+For the shared memory tile mentioned above, <a href="#figure-2">Figure 2</a> demonstrates how data is stored in the tiled matrix layout.
 
-<div align="center">
-  <img src="../../assets/images/tiled_matrix_layout.png" width="250"/><br>
-  Fig 2: The tiled matrix layout used for the shared memory tile.
+<div align="center" id="figure-2">
+  <a href="../../assets/images/tiled_matrix_layout.png" target="_blank">
+    <img src="../../assets/images/tiled_matrix_layout.png" width="250"/>
+  </a><br>
+  Figure 2: The tiled matrix layout used for the shared memory tile.
 </div>
 <br>
 
@@ -129,48 +134,75 @@ Specifically, let's revisit the `RowMajor<64, 64>` for shared memory tile declar
 
 #### Register Tile Layout
 
-The <span class="text-red">rThe register tile layout is specifically designed to efficiently feed data to TensorCore</span>. Conceptually similar to the tiled matrix layout, it is a depth-two nested array with a `BaseTileMatrixLayout` as the inner layout and a `MatrixLayout` as the outer layout.
+The <span class="text-red">register tile layout is specifically designed to feed data to TensorCore</span>. Conceptually similar to the tiled matrix layout, it is a depth-two nested array with a `BaseTileMatrixLayout` as the inner layout and a `MatrixLayout` as the outer layout.
 
-Specifically, let's revisit the register tile, as declared in the section [Register File Tile](#register-file-tile). TensorCore's MMA instruction has a hardware-prescribed tile shape and layout for the input operands. We prescribe a $[16, 16]$ basic building block to effectively leverage the MMA instruction. As shown on the left of Figure 3, a $16 \times 16$ basic tile feeding into the TensorCore is cooperatively held by a single warp. The first thread in the warp holds data in four segments, as indicated by the colors, and so on with the other threads in the warp. For a thread's register tile, `BaseTileRowMajor` and `BaseTileColumnMajor` store these four segments in the single thread's local register file.
+Specifically, let's revisit the register tile, as declared in the section [Register File Tile](#register-file-tile). TensorCore's MMA instruction has a hardware-prescribed tile shape and layout for the input operands. We prescribe a $[16, 16]$ basic building block to effectively leverage the MMA instruction. As shown on the left of <a href="#figure-3">Figure 3</a>, a $16 \times 16$ basic tile feeding into the TensorCore is cooperatively held by a single warp. The first thread in the warp holds data in four segments, as indicated by the colors, and so on with the other threads in the warp. For a thread's register tile, `BaseTileRowMajor` and `BaseTileColumnMajor` store these four segments in the single thread's local register file.
 
-<div align="center">
-  <img src="../../assets/images/register_tile_layout.png" width="500"/><br>
-  Fig 3: The TensorCore register tile layout.
+<div align="center" id="figure-3">
+  <a href="../../assets/images/register_tile_layout.png" target="_blank">
+    <img src="../../assets/images/register_tile_layout.png" width="500"/>
+  </a><br>
+  Figure 3: The TensorCore register tile layout.
 </div>
 <br>
 
-Register layouts, based on `BaseTileRowMajor` and `BaseTileColumnMajor`, can be understood as a depth-two nested array with a `BaseTileMatrixLayout` as the inner layout and a `MatrixLayout` as the outer layout. The register tile in Figure 3's right is equivalent to the following definition:
+Register layouts, based on `BaseTileRowMajor` and `BaseTileColumnMajor`, can be conceptualized as a depth-two nested array, with `BaseTileMatrixLayout` as the inner layout and `MatrixLayout` as the outer layout. The register tile depicted in the right part of <a href="#figure-3">Figure 3</a> is equivalent to the following definition:
 
 ```cpp
 using Reg = RegTile<BaseTileRowMajor<float>, RowMajor<2, 3>>;
 ```
 
-<p class="highlight-note"><span class="note-prefix">Note:</span>The interface for the register tile is coupled with the declaration of `RegisterTile`. The interface for specifying the register tile layout will be refined in the future to align more clearly with the underlying concept. For now, users can safely assume that implementations are guaranteed to follow the above description.</p>
+<p class="highlight-note"><span class="note-prefix">Note:</span>The interface for the register tile is coupled with the declaration of <code>RegisterTile</code> at the current version. The interface for specifying the register tile layout will be refined in the future to align more clearly with the underlying concept. For now, users can safely assume that implementations are guaranteed to follow the above description.</p>
 
-### GlobalTileIterator and SharedTileIterator
+### Tile Iterator
 
-TileIterator provides syntactic interfaces for defining tile partitions, facilitating the systematic traversal of tiles. It has two variants: `GTileIterator` and `STileIterator`.
+The tile iterator offers syntactic interfaces for defining tile partitions and facilitates tile traversal. Given that global and shared memory have distinct access patterns, there are two variants of tile iterators: [`GTileIterator`](https://github.com/microsoft/TileFusion/blob/master/include/types/global_tile_iterator.hpp) and [`STileIterator`](https://github.com/microsoft/TileFusion/blob/master/include/types/shared_tile_iterator.hpp). These iterators manage the differences in internal implementation. Despite these variations, both iterators maintain consistent behavior and interface:
 
 ```cpp
-using GlobalA = GlobalTile<InType, tl::RowMajor<kTM, kK, kK>>;
-using GIteratorA = GTileIterator<GlobalA, TileShape<kTM, kTK>>;
+// declare a global tile iterator
+using Global = GlobalTile<float, RowMajor<kM, kN>>;
+using GIterator= GTileIterator<Global, TileShape<kM, kTN>>;
 
-using SharedA = SharedTile<InType, tl::RowMajor<kTM, kTK>>;
-using SIteratorA = STileIterator<SharedA, TileShape<kTM, kRK>>;
+// declare a shared tile iterator
+using Shared = SharedTile<float, RowMajor<kM, kN>>;
+using SIterator = STileIterator<Shared, TileShape<kM, kN>>;
 ```
 
-<div align="center">
-  <img src="../../assets/images/tile_iterator.png" width="400"/><br>
-  Fig 4: Partition tensor using a tile iterator.
-</div>
+As indicated by the code snippets above, the tile iterator accepts two arguments: the first being a tile and the second being the chunk shape. The chunk shape must be smaller than the tile shape. Essentially, the tile represents a larger data region, and the tile shape specifies the dimensions of a smaller tile. The tile iterator then divides the larger tile into smaller tiles along each dimension.
 
-Given that a tile represents a larger data region, the tile shape specifies the dimensions of a smaller tile. The TileIterator then divides the larger tile into smaller tiles along each dimension.
+<div align="center" id="figure-4">
+  <a href="../../assets/images/1D_partition.png" target="_blank">
+    <img src="../../assets/images/1D_partition.png" width="400"/>
+  </a><br>
+  Figure 4: 1-D partition of a tensor using a tile iterator.
+</div>
+<br>
+
+<div align="center" id="figure-5">
+  <a href="../../assets/images/2D_partition.png" target="_blank">
+    <img src="../../assets/images/2D_partition.png" width="400"/>
+  </a><br>
+  Figure 5: 2-D partition of a tensor using a tile iterator.
+</div>
+<br>
+
+Since a tile in TileFusion is a 1D or 2D array, the tile iterator can partition a tensor into multiple tiles along one dimension (as shown in <a href="#figure-4">Figure 4</a>) or two dimensions (as shown in <a href="#figure-5">Figure 5</a>).
 
 ## Loader and Storer for Tiles
 
-<div align="center">
-  <img src="../../assets/images/loader_and_storer.png" width="600"/><br>
-  Fig 5: A tile is transferred between memory hierarchies using a loader and a storer.
+<div align="center" id="figure-6">
+  <a href="../../assets/images/loader_and_storer.png" target="_blank">
+    <img src="../../assets/images/loader_and_storer.png" width="600"/>
+  </a><br>
+  Figure 6: A tile is transferred between memory hierarchies using a loader and a storer.
 </div>
+<br>
 
-Loaders and Storers use cooperative threads to transfer a tile from the source to the target location. They operate at the CTA level and accept the following inputs: Warp Layout, Target Tile, and Source Tile. Based on these parameters, they automatically infer a copy plan that partitions the data transfer work among the threads.
+Loaders and storers are found in the [cell/copy](https://github.com/microsoft/TileFusion/tree/master/include/cell/copy) directory. There are three types of loaders and three types of storers in total, as shown in Figure 6.
+
+Loaders and storers operate at the CTA level and accept the following inputs: warp layout, target tile, and source tile. Based on these parameters, the internal implementation automatically infers a copy plan that partitions the data transfer work among the threads.
+
+Example usages:
+
+1. For the usage of global-to-register loader and store, refer to the [GEMM example](https://github.com/microsoft/TileFusion/blob/master/examples/01_gemm/01_gemm_global_reg/gemm.hpp) in the examples directory, which leverages global and register memory without using shared memory.
+2. For the usage of global-to-shared and shared-to-register loader and store, refer to the [GEMM example](https://github.com/microsoft/TileFusion/blob/master/examples/01_gemm/02_gemm_all_mem/gemm.hpp), which leverages all three levels of the GPU memory hierarchy.
